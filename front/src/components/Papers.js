@@ -7,18 +7,23 @@ import {
   updatePaper,
   removePaper,
 } from "./../requests/papersRequest";
+import Card from "react-bootstrap/Card";
 
 export default function Papers() {
   const [papers, setPapers] = useState([]);
   const [isPapersLoading, setIsPapersLoading] = useState(false);
   const [selectPaperToUpdate, setSelectPaperToUpdate] = useState(null);
+  const [paper, setPaper] = useState({
+    title: "",
+    content: "",
+  });
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const initializePaper = () => {
+    setPaper({ title: "", content: "" });
+  };
 
   useEffect(() => {
     setIsPapersLoading(true);
-
     fetchPapers().then((papers) => {
       setPapers(papers);
       setIsPapersLoading(false);
@@ -36,50 +41,39 @@ export default function Papers() {
   const sendFormPaper = (e) => {
     e.preventDefault();
 
-    let paper = {
-      title: title,
-      content: content,
-    };
-
     if (selectPaperToUpdate !== null) {
       updatePaper(selectPaperToUpdate).then((response) => {
         if (response.ok === true) {
+          let paperUpdated = paper;
           let newPapers = papers.map((paper) => {
             if (paper.id === selectPaperToUpdate.id) {
-              paper.title = title;
-              paper.content = content;
+              paper.title = paperUpdated.title;
+              paper.content = paperUpdated.content;
             }
             return paper;
           });
           setPapers(newPapers);
 
           setSelectPaperToUpdate(null);
-          setTitle("");
-          setContent("");
+          initializePaper();
         }
       });
     } else {
       addPaper(paper).then((response) => {
         if (response.ok === true) {
-          let lastPaper = papers[papers.length - 1];
-          let lastId = 1;
-          if (lastPaper !== undefined) {
-            lastId = lastPaper.id + 1;
-          }
+          response.json().then((data) => {
+            paper.id = data.id;
+            setPapers([...papers, paper]);
+          });
 
-          paper.id = lastId;
-
-          setPapers([...papers, paper]);
-          setTitle("");
-          setContent("");
+          initializePaper();
         }
       });
     }
   };
 
   const editPaper = (paper) => {
-    setTitle(paper.title);
-    setContent(paper.content);
+    setPaper({ title: paper.title, content: paper.content });
     setSelectPaperToUpdate(paper);
   };
 
@@ -91,15 +85,15 @@ export default function Papers() {
             Title :{" "}
             <input
               type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={paper.title}
+              onChange={(e) => setPaper({ ...paper, title: e.target.value })}
             />
           </p>
           <p>
             Content :{" "}
             <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+              value={paper.content}
+              onChange={(e) => setPaper({ ...paper, content: e.target.value })}
             />
           </p>
           <button>send</button>
@@ -107,20 +101,51 @@ export default function Papers() {
       </div>
       <hr />
       {isPapersLoading === true ? (
-        <Placeholder as="p" animation="glow">
-          <Placeholder xs={6} />
-        </Placeholder>
+        <div>
+          {[1, 2, 3].map((index) => {
+            return (
+              <Card className="mt-4" key={index}>
+                <Card.Body>
+                  <Placeholder as={Card.Title} animation="glow">
+                    <Placeholder xs={4} />
+                  </Placeholder>
+                  <Placeholder as={Card.Text} animation="glow">
+                    <Placeholder xs={7} /> <Placeholder xs={4} />{" "}
+                    <Placeholder xs={4} /> <Placeholder xs={6} />{" "}
+                    <Placeholder xs={8} />
+                  </Placeholder>
+                </Card.Body>
+              </Card>
+            );
+          })}
+        </div>
       ) : papers.length === 0 ? (
         <div>No more papers</div>
       ) : (
         papers.map((paper, index) => {
           return (
-            <div key={index}>
-              <p>Title : {paper.title}</p>
-              <p>Content : {paper.content}</p>
-              <Button onClick={() => editPaper(paper)}>Edit</Button>
-              <Button onClick={() => deletePaper(paper.id)}>Delete</Button>
-            </div>
+            <Card key={index} className="custom-card">
+              <Card.Body>
+                <Card.Title>{paper.title}</Card.Title>
+                <Card.Text>{paper.content}</Card.Text>
+                <div className="card-button">
+                  <Button
+                    className="card-button-item"
+                    variant="warning"
+                    onClick={() => editPaper(paper)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    className="card-button-item"
+                    variant="danger"
+                    onClick={() => deletePaper(paper.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
           );
         })
       )}
