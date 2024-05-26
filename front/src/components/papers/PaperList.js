@@ -4,6 +4,7 @@ import Placeholder from "react-bootstrap/Placeholder";
 import { fetchPapers, removePaper } from "../../requests/papersRequest";
 import Card from "react-bootstrap/Card";
 import { Link, useNavigate } from "react-router-dom";
+import Badge from "react-bootstrap/Badge";
 
 export default function Papers() {
   const [papers, setPapers] = useState([]);
@@ -78,6 +79,9 @@ export default function Papers() {
                 <Card.Body>
                   <Card.Title>{paper.title}</Card.Title>
                   <Card.Text>{paper.content}</Card.Text>
+                  {paper.category !== undefined && (
+                    <Badge bg="dark">{paper.category.name}</Badge>
+                  )}
                   <div className="card-button">
                     <Button
                       className="card-button-item"

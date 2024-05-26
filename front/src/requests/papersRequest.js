@@ -23,6 +23,7 @@ async function addPaper(paper) {
     method: "POST",
     body: JSON.stringify(paper),
     headers: {
+      Accept: "application/json",
       "Content-Type": "application/json",
     },
   });
@@ -35,6 +36,7 @@ async function updatePaper(paper) {
     method: "PUT",
     body: JSON.stringify(paper),
     headers: {
+      Accept: "application/json",
       "Content-Type": "application/json",
     },
   });

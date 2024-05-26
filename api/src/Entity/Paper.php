@@ -6,21 +6,33 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PaperRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PaperRepository::class)]
-#[ApiResource(paginationItemsPerPage: 10)]
+#[ApiResource(
+    paginationItemsPerPage: 10,
+    normalizationContext: ['groups' => 'paper:read'],
+    denormalizationContext:['groups' => 'paper:write']
+    )]
 class Paper
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['paper:read', 'paper:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['paper:read', 'paper:write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['paper:read', 'paper:write'])]
     private ?string $content = null;
+
+    #[ORM\ManyToOne(inversedBy: 'papers')]
+    #[Groups(['paper:read', 'paper:write'])]
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -47,6 +59,18 @@ class Paper
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
