@@ -1,55 +1,49 @@
-import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
-import Placeholder from "react-bootstrap/Placeholder";
-import { fetchPapers, removePaper } from "../../requests/papersRequest";
+import {
+  fetchCategories,
+  removeCategory,
+} from "./../../requests/categoryRequest";
 import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import Placeholder from "react-bootstrap/Placeholder";
 import { Link, useNavigate } from "react-router-dom";
 import Badge from "react-bootstrap/Badge";
 
-export default function Papers() {
-  const [papers, setPapers] = useState([]);
+export default function CategoryList() {
+  const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setIsLoading(true);
-    fetchPapers().then((papers) => {
-      setPapers(papers["hydra:member"]);
-      if (papers["hydra:view"] !== undefined) {
-        setPagination(papers["hydra:view"]);
+    fetchCategories().then((categories) => {
+      setCategories(categories["hydra:member"]);
+      if (categories["hydra:view"] !== undefined) {
+        setPagination(categories["hydra:view"]);
       }
       setIsLoading(false);
     });
   }, []);
 
-  const deletePaper = (id) => {
-    removePaper(id).then((response) => {
+  const moveToCategoryEditPage = (id) => {
+    navigate("/category/" + id + "/edit");
+  };
+
+  const deleteCategory = (id) => {
+    removeCategory(id).then((response) => {
       if (response.ok === true) {
-        setPapers(papers.filter((paper) => paper.id !== id));
+        setCategories(categories.filter((category) => category.id !== id));
       }
     });
-  };
-
-  const navigate = useNavigate();
-
-  const moveToPaperEditPage = (id) => {
-    navigate("/paper/" + id + "/edit");
-  };
-
-  const loadNextPapers = () => {
-    if (pagination["hydra:next"] !== undefined) {
-      fetchPapers(pagination["hydra:next"]).then((currentPapers) => {
-        setPapers([...papers, ...currentPapers["hydra:member"]]);
-        setPagination(currentPapers["hydra:view"]);
-      });
-    }
   };
 
   return (
     <div>
       <div className="pb-3">
-        <Link to="/paper/add">
-          <Button>Créer un papier</Button>
+        <Link to="/category/add">
+          <Button>Créer une catégorie</Button>
         </Link>
       </div>
       {isLoading === true ? (
@@ -71,31 +65,32 @@ export default function Papers() {
             );
           })}
         </div>
-      ) : papers.length === 0 ? (
-        <div>No more papers</div>
+      ) : categories.length === 0 ? (
+        <div>No more categories</div>
       ) : (
         <div>
-          {papers.map((paper, index) => {
+          {categories.map((category, index) => {
             return (
               <Card key={index} className="custom-card">
                 <Card.Body>
-                  <Card.Title>{paper.title}</Card.Title>
-                  <Card.Text>{paper.content}</Card.Text>
-                  {paper.category !== undefined && (
-                    <Badge bg="dark">{paper.category.name}</Badge>
-                  )}
+                  <Card.Title>{category.name}</Card.Title>
+                  <Badge bg="dark">{category.papers.length}</Badge>
                   <div className="card-button">
                     <Button
                       className="card-button-item"
                       variant="warning"
-                      onClick={() => moveToPaperEditPage(paper.id)}
+                      onClick={() => {
+                        moveToCategoryEditPage(category.id);
+                      }}
                     >
                       Edit
                     </Button>
                     <Button
                       className="card-button-item"
                       variant="danger"
-                      onClick={() => deletePaper(paper.id)}
+                      onClick={() => {
+                        deleteCategory(category.id);
+                      }}
                     >
                       Delete
                     </Button>
@@ -106,12 +101,7 @@ export default function Papers() {
           })}
           <div className="text-align-center">
             {pagination["hydra:next"] !== undefined && (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  loadNextPapers();
-                }}
-              >
+              <Button variant="secondary" onClick={() => {}}>
                 Charger
               </Button>
             )}

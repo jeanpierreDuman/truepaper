@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(
+    paginationItemsPerPage: 10,
     normalizationContext: ['groups' => ['category:read']],
 )]
 class Category
@@ -26,6 +27,7 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['category:read'])]
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Paper::class)]
     private Collection $papers;
 

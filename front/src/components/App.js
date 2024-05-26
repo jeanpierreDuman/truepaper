@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./../styles/index.css";
 import PaperAdd from "./papers/PaperAdd";
 import PaperEdit from "./papers/PaperEdit";
+import CategoryList from "./categories/CategoryList";
+import CategoryAdd from "./categories/CategoryAdd";
+import CategoryEdit from "./categories/CategoryEdit";
 
 export default function App() {
   return (
@@ -18,6 +21,9 @@ export default function App() {
                   <li>
                     <Link to="/">Accueil</Link>
                   </li>
+                  <li>
+                    <Link to="/categories">Categories</Link>
+                  </li>
                 </ul>
               </nav>
 
@@ -25,6 +31,9 @@ export default function App() {
                 <Route path="/" element={<PaperList />} />
                 <Route path="/paper/add" element={<PaperAdd />} />
                 <Route path="/paper/:id/edit" element={<PaperEdit />} />
+                <Route path="/categories" element={<CategoryList />} />
+                <Route path="/category/add" element={<CategoryAdd />} />
+                <Route path="/category/:id/edit" element={<CategoryEdit />} />
               </Routes>
             </div>
           </Row>
