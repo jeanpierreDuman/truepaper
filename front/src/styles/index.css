@@ -1,0 +1,42 @@
+body {
+  margin-top: 100px !important;
+}
+
+.custom-card {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.card-button {
+  float: right;
+}
+
+.card-button-item {
+  margin-right: 5px;
+}
+
+nav {
+  background-color: rgb(35, 30, 30);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  padding-top: 20px;
+}
+
+nav li {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+nav li a {
+  color: white;
+  text-decoration: none;
+}
+
+.text-align-center {
+  text-align: center;
+  margin: 0;
+  padding-bottom: 20px;
+}

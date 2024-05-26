@@ -1,28 +1,35 @@
-import Papers from "./Papers";
+import Papers from "./papers/Papers";
 import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
-import "./../index.css";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import "./../styles/index.css";
+import PaperAdd from "./papers/PaperAdd";
+import PaperEdit from "./papers/PaperEdit";
 
 export default function App() {
   return (
     <div>
-      <Navbar bg="dark" data-bs-theme="dark">
+      <Router>
         <Container>
-          <Navbar.Brand href="#home">Navbar</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
-          </Nav>
+          <Row className="mt-4">
+            <div>
+              <nav>
+                <ul>
+                  <li>
+                    <Link to="/">Accueil</Link>
+                  </li>
+                </ul>
+              </nav>
+
+              <Routes>
+                <Route path="/" element={<Papers />} />
+                <Route path="/paper/add" element={<PaperAdd />} />
+                <Route path="/paper/:id/edit" element={<PaperEdit />} />
+              </Routes>
+            </div>
+          </Row>
         </Container>
-      </Navbar>
-      <Container>
-        <Row className="mt-4">
-          <Papers />
-        </Row>
-      </Container>
+      </Router>
     </div>
   );
 }

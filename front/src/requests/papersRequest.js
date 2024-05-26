@@ -1,12 +1,21 @@
-async function fetchPapers() {
-  const response = await fetch("http://localhost:8000/api/papers", {
+async function fetchPapers(url = "/api/papers") {
+  const response = await fetch("http://localhost:8000" + url);
+
+  const papers = await response.json();
+
+  return papers;
+}
+
+async function getPaper(id) {
+  const response = await fetch("http://localhost:8000/api/papers/" + id, {
     headers: {
       Accept: "application/json",
     },
   });
 
-  const papers = await response.json();
-  return papers;
+  const paper = await response.json();
+
+  return paper;
 }
 
 async function addPaper(paper) {
@@ -41,4 +50,4 @@ async function removePaper(id) {
   return response;
 }
 
-export { fetchPapers, addPaper, updatePaper, removePaper };
+export { fetchPapers, getPaper, addPaper, updatePaper, removePaper };
