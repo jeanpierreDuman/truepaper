@@ -4,8 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getPaper } from "../../requests/papersRequest";
 import { fetchCategories } from "../../requests/categoryRequest";
 import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default function PaperForm({ type = "add" }) {
   const [paper, setPaper] = useState({
@@ -94,14 +95,14 @@ export default function PaperForm({ type = "add" }) {
           <span className="error">{errorPaperForm.title}</span>
         </div>
         <div className="mt-4">
-          <InputGroup>
-            <InputGroup.Text>Contenu</InputGroup.Text>
-            <Form.Control
-              as="textarea"
-              value={paper.content}
-              onChange={(e) => setPaper({ ...paper, content: e.target.value })}
-            />
-          </InputGroup>
+          <CKEditor
+            editor={ClassicEditor}
+            data={paper.content}
+            onReady={() => {}}
+            onChange={(event, editor) =>
+              setPaper({ ...paper, content: editor.getData() })
+            }
+          />
           <span className="error">{errorPaperForm.content}</span>
         </div>
         <div className="mt-4">

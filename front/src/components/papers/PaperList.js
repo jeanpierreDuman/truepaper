@@ -7,6 +7,7 @@ import Card from "react-bootstrap/Card";
 import { Link, useNavigate } from "react-router-dom";
 import Badge from "react-bootstrap/Badge";
 import Form from "react-bootstrap/Form";
+//import parse from "html-react-parser";
 
 export default function Papers() {
   const [papers, setPapers] = useState([]);
@@ -125,7 +126,10 @@ export default function Papers() {
               <Card key={index} className="custom-card">
                 <Card.Body>
                   <Card.Title>{paper.title}</Card.Title>
-                  <Card.Text>{paper.content}</Card.Text>
+                  <Card.Text
+                    dangerouslySetInnerHTML={{ __html: paper.content }}
+                  />
+
                   {paper.category !== undefined && (
                     <Badge bg="dark">{paper.category.name}</Badge>
                   )}
