@@ -1,6 +1,26 @@
-async function fetchPapers(url = "/api/papers") {
-  const response = await fetch("http://localhost:8000" + url);
+const API_URL = "http://localhost:8000";
 
+function getParamUrl(url, filters) {
+  // Order filter
+  url += url.includes("?page") ? "&" : "?";
+  url += "order[id]=" + filters.order;
+
+  // Category filter
+  if (filters.category !== "") {
+    url += "&category.name=" + filters.category;
+  }
+
+  return url;
+}
+
+async function fetchPapers(
+  url = "/api/papers",
+  filters = { order: "DESC", category: "" }
+) {
+  let custormUrl = API_URL + url;
+  custormUrl = getParamUrl(custormUrl, filters);
+
+  const response = await fetch(custormUrl);
   const papers = await response.json();
 
   return papers;

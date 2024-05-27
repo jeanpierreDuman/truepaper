@@ -2,25 +2,42 @@ import Button from "react-bootstrap/Button";
 import { useEffect, useState } from "react";
 import Placeholder from "react-bootstrap/Placeholder";
 import { fetchPapers, removePaper } from "../../requests/papersRequest";
+import { fetchCategories } from "../../requests/categoryRequest";
 import Card from "react-bootstrap/Card";
 import { Link, useNavigate } from "react-router-dom";
 import Badge from "react-bootstrap/Badge";
+import Form from "react-bootstrap/Form";
 
 export default function Papers() {
   const [papers, setPapers] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    order: "DESC",
+    category: "",
+  });
+
+  useEffect(() => {
+    fetchCategories().then((categories) => {
+      setCategories(categories["hydra:member"]);
+    });
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
-    fetchPapers().then((papers) => {
+    fetchPapers("/api/papers", filters).then((papers) => {
       setPapers(papers["hydra:member"]);
       if (papers["hydra:view"] !== undefined) {
         setPagination(papers["hydra:view"]);
       }
       setIsLoading(false);
     });
-  }, []);
+  }, [filters]);
+
+  const handleChangeFilters = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
 
   const deletePaper = (id) => {
     removePaper(id).then((response) => {
@@ -38,7 +55,7 @@ export default function Papers() {
 
   const loadNextPapers = () => {
     if (pagination["hydra:next"] !== undefined) {
-      fetchPapers(pagination["hydra:next"]).then((currentPapers) => {
+      fetchPapers(pagination["hydra:next"], filters).then((currentPapers) => {
         setPapers([...papers, ...currentPapers["hydra:member"]]);
         setPagination(currentPapers["hydra:view"]);
       });
@@ -52,6 +69,34 @@ export default function Papers() {
           <Button>Créer un papier</Button>
         </Link>
       </div>
+      <hr />
+      <div className="form-filter">
+        <Form.Select
+          style={{ width: 150 }}
+          value={filters.order}
+          onChange={handleChangeFilters}
+          name="order"
+        >
+          <option value={"ASC"}>Id : ASC</option>
+          <option value={"DESC"}>Id : DESC</option>
+        </Form.Select>
+        <Form.Select
+          onChange={handleChangeFilters}
+          style={{ width: 200 }}
+          value={filters.category}
+          name="category"
+        >
+          <option value={""} />
+          {categories.map((category, index) => {
+            return (
+              <option key={index} value={category.name}>
+                {category.name}
+              </option>
+            );
+          })}
+        </Form.Select>
+      </div>
+      <hr />
       {isLoading === true ? (
         <div>
           {[1, 2, 3].map((index) => {

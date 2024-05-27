@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PaperRepository;
 use Doctrine\DBAL\Types\Types;
@@ -13,7 +16,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
     paginationItemsPerPage: 10,
     normalizationContext: ['groups' => 'paper:read'],
     denormalizationContext:['groups' => 'paper:write']
-    )]
+)]
+#[ApiFilter(OrderFilter::class, properties: ['id'], arguments: ['orderParameterName' => 'order'])]
+#[ApiFilter(SearchFilter::class, properties: [
+    'category.name' => 'exact'
+])]
 class Paper
 {
     #[ORM\Id]
