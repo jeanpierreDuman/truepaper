@@ -10,6 +10,7 @@ use App\Repository\PaperRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PaperRepository::class)]
 #[ApiResource(
@@ -31,10 +32,14 @@ class Paper
 
     #[ORM\Column(length: 255)]
     #[Groups(['paper:read', 'paper:write'])]
+    #[Assert\NotBlank()]
+    #[Assert\NotNull()]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['paper:read', 'paper:write'])]
+    #[Assert\NotBlank()]
+    #[Assert\NotNull()]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'papers')]

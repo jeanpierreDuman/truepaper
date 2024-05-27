@@ -13,6 +13,12 @@ export default function PaperForm({ type = "add" }) {
     content: "",
     category: null,
   });
+  const initialErrorPaperForm = {
+    title: "",
+    content: "",
+  };
+
+  const [errorPaperForm, setErrorPaperForm] = useState(initialErrorPaperForm);
   const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
@@ -56,6 +62,19 @@ export default function PaperForm({ type = "add" }) {
     funcPaperAddOrEdit.then((response) => {
       if (response.ok === true) {
         navigate("/");
+      } else {
+        response.json().then((err) => {
+          let errorForm = initialErrorPaperForm;
+          err.violations.forEach((errViolation) => {
+            if (
+              Object.keys(errorPaperForm).includes(errViolation.propertyPath)
+            ) {
+              errorForm[errViolation.propertyPath] = errViolation.message;
+            }
+          });
+
+          setErrorPaperForm(errorForm);
+        });
       }
     });
   };
@@ -72,6 +91,7 @@ export default function PaperForm({ type = "add" }) {
             type="text"
             id="title"
           />
+          <span className="error">{errorPaperForm.title}</span>
         </div>
         <div className="mt-4">
           <InputGroup>
@@ -82,6 +102,7 @@ export default function PaperForm({ type = "add" }) {
               onChange={(e) => setPaper({ ...paper, content: e.target.value })}
             />
           </InputGroup>
+          <span className="error">{errorPaperForm.content}</span>
         </div>
         <div className="mt-4">
           <Form.Label htmlFor="category">Categorie :</Form.Label>
