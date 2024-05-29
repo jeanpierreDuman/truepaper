@@ -81,7 +81,7 @@ export default function PaperForm({ type = "add" }) {
   };
 
   return (
-    <div>
+    <div className="div-form">
       <h2>{type === "add" ? "Ajouter un papier" : "Editer un papier"}</h2>
       <form onSubmit={sendFormPaper}>
         <div>

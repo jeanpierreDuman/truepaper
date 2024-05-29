@@ -8,6 +8,7 @@ import PaperEdit from "./papers/PaperEdit";
 import CategoryList from "./categories/CategoryList";
 import CategoryAdd from "./categories/CategoryAdd";
 import CategoryEdit from "./categories/CategoryEdit";
+import Col from "react-bootstrap/esm/Col";
 
 export default function App() {
   return (
@@ -15,18 +16,16 @@ export default function App() {
       <Router>
         <Container>
           <Row className="mt-4">
-            <div>
-              <nav>
-                <ul>
-                  <li>
-                    <Link to="/">Accueil</Link>
-                  </li>
-                  <li>
-                    <Link to="/categories">Categories</Link>
-                  </li>
-                </ul>
-              </nav>
-
+            <Col md={3}>
+              <div className="menus">
+                <div className="text-center">
+                  <img src={"logo.png"} alt="Truepaper logo" />
+                </div>
+                <Link to="/">Papiers</Link>
+                <Link to="/categories">Categories</Link>
+              </div>
+            </Col>
+            <Col md={9}>
               <Routes>
                 <Route path="/" element={<PaperList />} />
                 <Route path="/paper/add" element={<PaperAdd />} />
@@ -35,7 +34,7 @@ export default function App() {
                 <Route path="/category/add" element={<CategoryAdd />} />
                 <Route path="/category/:id/edit" element={<CategoryEdit />} />
               </Routes>
-            </div>
+            </Col>
           </Row>
         </Container>
       </Router>

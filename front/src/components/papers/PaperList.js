@@ -70,8 +70,7 @@ export default function Papers() {
           <Button>Créer un papier</Button>
         </Link>
       </div>
-      <hr />
-      <div className="form-filter">
+      <div className="form-filter mb-3">
         <Form.Select
           style={{ width: 150 }}
           value={filters.order}
@@ -97,7 +96,6 @@ export default function Papers() {
           })}
         </Form.Select>
       </div>
-      <hr />
       {isLoading === true ? (
         <div>
           {[1, 2, 3].map((index) => {

@@ -1,5 +1,5 @@
 body {
-  margin-top: 100px !important;
+  background-color: #eee !important;
 }
 
 .custom-card {
@@ -11,28 +11,26 @@ body {
   float: right;
 }
 
+div.menus {
+  background-color: white;
+  padding: 20px;
+  border-radius: 3px;
+  border: 1px solid lightgray;
+}
+
+div.menus img {
+  margin-bottom: 20px;
+}
+
+div.menus a {
+  display: block;
+  text-decoration: none;
+  margin-bottom: 5px;
+  color: black;
+}
+
 .card-button-item {
   margin-right: 5px;
-}
-
-nav {
-  background-color: rgb(35, 30, 30);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px;
-  padding-top: 20px;
-}
-
-nav li {
-  display: inline-block;
-  margin-left: 10px;
-}
-
-nav li a {
-  color: white;
-  text-decoration: none;
 }
 
 .text-align-center {
@@ -43,9 +41,16 @@ nav li a {
 
 .form-filter select {
   display: inline-block;
-  margin: 10px;
+  margin-right: 10px;
 }
 
 .error {
   color: red;
+}
+
+.div-form {
+  background: white;
+  padding: 10px;
+  border-radius: 1px;
+  border: 1px solid lightgrey;
 }

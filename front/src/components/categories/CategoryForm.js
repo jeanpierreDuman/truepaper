@@ -39,7 +39,7 @@ export default function CategoryForm({ type = "add" }) {
   };
 
   return (
-    <div>
+    <div className="div-form">
       <h2>
         {type === "add" ? "Ajouter une catégorie" : "Editer une catégorie"}
       </h2>
