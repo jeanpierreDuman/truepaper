@@ -54,3 +54,13 @@ div.menus a {
   border-radius: 1px;
   border: 1px solid lightgrey;
 }
+
+.form-link {
+  border-left: 2px solid black;
+  padding-left: 10px;
+  margin-top: 20px;
+}
+
+.form-link div.action {
+  text-align: right;
+}

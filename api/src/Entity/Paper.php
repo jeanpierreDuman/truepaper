@@ -6,19 +6,32 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\PaperRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\UpdatePaperController;
 
 #[ORM\Entity(repositoryClass: PaperRepository::class)]
 #[ApiResource(
     paginationItemsPerPage: 10,
     normalizationContext: ['groups' => 'paper:read'],
-    denormalizationContext:['groups' => 'paper:write']
+    denormalizationContext:['groups' => 'paper:write'],
+    operations: [
+        new Put(
+            name: 'paper_update',
+            uriTemplate: '/papers/{id}/update',
+            controller: UpdatePaperController::class
+        ),
+        new GetCollection(),
+        new Get(),
+        new Post()
+    ]
 )]
 #[ApiFilter(OrderFilter::class, properties: ['id'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(SearchFilter::class, properties: [
@@ -49,13 +62,8 @@ class Paper
     private ?Category $category = null;
 
     #[Groups(['paper:read', 'paper:write'])]
-    #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Source::class)]
-    private Collection $sources;
-
-    public function __construct()
-    {
-        $this->sources = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'papers', cascade: ['persist', 'remove'])]
+    private ?Source $source = null;
 
     public function getId(): ?int
     {
@@ -98,32 +106,14 @@ class Paper
         return $this;
     }
 
-    /**
-     * @return Collection<int, Source>
-     */
-    public function getSources(): Collection
+    public function getSource(): ?Source
     {
-        return $this->sources;
+        return $this->source;
     }
 
-    public function addSource(Source $source): static
+    public function setSource(?Source $source): static
     {
-        if (!$this->sources->contains($source)) {
-            $this->sources->add($source);
-            $source->setPaper($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSource(Source $source): static
-    {
-        if ($this->sources->removeElement($source)) {
-            // set the owning side to null (unless already changed)
-            if ($source->getPaper() === $this) {
-                $source->setPaper(null);
-            }
-        }
+        $this->source = $source;
 
         return $this;
     }

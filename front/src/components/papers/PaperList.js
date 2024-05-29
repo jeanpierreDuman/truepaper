@@ -128,7 +128,7 @@ export default function Papers() {
                     dangerouslySetInnerHTML={{ __html: paper.content }}
                   />
 
-                  {paper.category !== undefined && (
+                  {paper.category !== undefined && paper.category !== null && (
                     <Badge bg="dark">{paper.category.name}</Badge>
                   )}
                   <div className="card-button">

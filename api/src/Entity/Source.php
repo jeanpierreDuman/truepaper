@@ -18,37 +18,26 @@ class Source
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sources')]
-    private ?Paper $paper = null;
-
     #[ORM\OneToMany(mappedBy: 'source', targetEntity: Picture::class)]
     private Collection $pictures;
 
     #[Groups(['paper:read', 'paper:write'])]
-    #[ORM\OneToMany(mappedBy: 'source', targetEntity: Link::class)]
+    #[ORM\OneToMany(mappedBy: 'source', targetEntity: Link::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
     private Collection $links;
+
+    #[ORM\OneToMany(mappedBy: 'source', targetEntity: Paper::class)]
+    private Collection $papers;
 
     public function __construct()
     {
         $this->pictures = new ArrayCollection();
         $this->links = new ArrayCollection();
+        $this->papers = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPaper(): ?Paper
-    {
-        return $this->paper;
-    }
-
-    public function setPaper(?Paper $paper): static
-    {
-        $this->paper = $paper;
-
-        return $this;
     }
 
     /**
@@ -105,6 +94,36 @@ class Source
             // set the owning side to null (unless already changed)
             if ($link->getSource() === $this) {
                 $link->setSource(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Paper>
+     */
+    public function getPapers(): Collection
+    {
+        return $this->papers;
+    }
+
+    public function addPaper(Paper $paper): static
+    {
+        if (!$this->papers->contains($paper)) {
+            $this->papers->add($paper);
+            $paper->setSource($this);
+        }
+
+        return $this;
+    }
+
+    public function removePaper(Paper $paper): static
+    {
+        if ($this->papers->removeElement($paper)) {
+            // set the owning side to null (unless already changed)
+            if ($paper->getSource() === $this) {
+                $paper->setSource(null);
             }
         }
 

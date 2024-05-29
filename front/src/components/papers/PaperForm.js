@@ -13,7 +13,11 @@ export default function PaperForm({ type = "add" }) {
     title: "",
     content: "",
     category: null,
+    source: {
+      links: [],
+    },
   });
+
   const initialErrorPaperForm = {
     title: "",
     content: "",
@@ -33,6 +37,11 @@ export default function PaperForm({ type = "add" }) {
 
     if (type === "edit") {
       getPaper(id).then((data) => {
+        if (data.source === null) {
+          data.source = {
+            links: [],
+          };
+        }
         setPaper(data);
       });
     }
@@ -52,8 +61,11 @@ export default function PaperForm({ type = "add" }) {
   };
 
   const changeContent = (editor) => {
-    if (onLoadContent === true) {
+    if (type === "add") {
       setPaper({ ...paper, content: editor.getData() });
+    } else {
+      if (onLoadContent === true)
+        setPaper({ ...paper, content: editor.getData() });
     }
 
     setOnLoadContent(true);
@@ -88,6 +100,46 @@ export default function PaperForm({ type = "add" }) {
           }
         });
       }
+    });
+  };
+
+  const addLink = () => {
+    setPaper((prevPaper) => {
+      return {
+        ...prevPaper,
+        source: {
+          ...prevPaper.source,
+          links: [...paper.source.links, { name: "", url: "" }],
+        },
+      };
+    });
+  };
+
+  const setOnChangeLink = (e, index) => {
+    let links = paper.source.links.map((link, indexLoop) => {
+      if (index === indexLoop) {
+        link[e.target.name] = e.target.value;
+      }
+      return link;
+    });
+
+    setPaper((prevPaper) => {
+      return {
+        ...prevPaper,
+        source: { ...prevPaper.source, links: links },
+      };
+    });
+  };
+
+  const deleteLink = (index) => {
+    let links = paper.source.links.filter(
+      (link, indexLoop) => indexLoop !== index
+    );
+    setPaper((prevPaper) => {
+      return {
+        ...prevPaper,
+        source: { ...prevPaper.source, links: links },
+      };
     });
   };
 
@@ -136,6 +188,51 @@ export default function PaperForm({ type = "add" }) {
               })}
             </Form.Select>
           </div>
+        </div>
+        <div className="div-form mt-2">
+          <h5>Liens</h5>
+          <div className="text-center">
+            <Button onClick={() => addLink()}>Ajouter un lien</Button>
+          </div>
+          {paper.source.links.map((link, index) => {
+            return (
+              <div key={index}>
+                <div className="form-link">
+                  <p>
+                    Nom :{" "}
+                    <input
+                      type="text"
+                      value={link.name}
+                      className="form-control"
+                      name="name"
+                      onChange={(e) => {
+                        setOnChangeLink(e, index);
+                      }}
+                    />
+                    Url :
+                    <input
+                      type="text"
+                      value={link.url}
+                      className="form-control"
+                      name="url"
+                      onChange={(e) => {
+                        setOnChangeLink(e, index);
+                      }}
+                    />
+                  </p>
+                  <div className="action">
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => deleteLink(index)}
+                    >
+                      Supprimer le lien
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
         <div className="mt-4">
           <Button type="submit">Envoyer</Button>
