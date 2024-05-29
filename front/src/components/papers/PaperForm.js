@@ -19,6 +19,7 @@ export default function PaperForm({ type = "add" }) {
     content: "",
   };
 
+  const [onLoadContent, setOnLoadContent] = useState(false);
   const [errorPaperForm, setErrorPaperForm] = useState(initialErrorPaperForm);
   const [categories, setCategories] = useState([]);
 
@@ -50,6 +51,14 @@ export default function PaperForm({ type = "add" }) {
     setPaper({ ...paper, category: category });
   };
 
+  const changeContent = (editor) => {
+    if (onLoadContent === true) {
+      setPaper({ ...paper, content: editor.getData() });
+    }
+
+    setOnLoadContent(true);
+  };
+
   const sendFormPaper = (e) => {
     e.preventDefault();
 
@@ -65,66 +74,68 @@ export default function PaperForm({ type = "add" }) {
         navigate("/");
       } else {
         response.json().then((err) => {
-          let errorForm = initialErrorPaperForm;
-          err.violations.forEach((errViolation) => {
-            if (
-              Object.keys(errorPaperForm).includes(errViolation.propertyPath)
-            ) {
-              errorForm[errViolation.propertyPath] = errViolation.message;
-            }
-          });
+          if (err.violations !== undefined) {
+            let errorForm = initialErrorPaperForm;
+            err.violations.forEach((errViolation) => {
+              if (
+                Object.keys(errorPaperForm).includes(errViolation.propertyPath)
+              ) {
+                errorForm[errViolation.propertyPath] = errViolation.message;
+              }
+            });
 
-          setErrorPaperForm(errorForm);
+            setErrorPaperForm(errorForm);
+          }
         });
       }
     });
   };
 
   return (
-    <div className="div-form">
-      <h2>{type === "add" ? "Ajouter un papier" : "Editer un papier"}</h2>
+    <div>
       <form onSubmit={sendFormPaper}>
-        <div>
-          <Form.Label htmlFor="title">Titre :</Form.Label>
-          <Form.Control
-            value={paper.title}
-            onChange={(e) => setPaper({ ...paper, title: e.target.value })}
-            type="text"
-            id="title"
-          />
-          <span className="error">{errorPaperForm.title}</span>
-        </div>
-        <div className="mt-4">
-          <CKEditor
-            editor={ClassicEditor}
-            data={paper.content}
-            onReady={() => {}}
-            onChange={(event, editor) =>
-              setPaper({ ...paper, content: editor.getData() })
-            }
-          />
-          <span className="error">{errorPaperForm.content}</span>
-        </div>
-        <div className="mt-4">
-          <Form.Label htmlFor="category">Categorie :</Form.Label>
-          <Form.Select
-            id="category"
-            onChange={changeCategory}
-            value={
-              paper.category !== undefined && paper.category !== null
-                ? paper.category.id
-                : ""
-            }
-          >
-            <option key={null} value={""}></option>
-            {categories.map((category) => {
-              return (
-                <option key={category["@id"]} value={category.id}>
-                  {category.name}
-                </option>
-              );
-            })}
-          </Form.Select>
+        <div className="div-form">
+          <h2>{type === "add" ? "Ajouter un papier" : "Editer un papier"}</h2>
+          <div>
+            <Form.Label htmlFor="title">Titre :</Form.Label>
+            <Form.Control
+              value={paper.title}
+              onChange={(e) => setPaper({ ...paper, title: e.target.value })}
+              type="text"
+              id="title"
+            />
+            <span className="error">{errorPaperForm.title}</span>
+          </div>
+          <div className="mt-4">
+            <CKEditor
+              id="content"
+              editor={ClassicEditor}
+              data={paper.content}
+              onChange={(event, editor) => changeContent(editor)}
+            />
+            <span className="error">{errorPaperForm.content}</span>
+          </div>
+          <div className="mt-4">
+            <Form.Label htmlFor="category">Categorie :</Form.Label>
+            <Form.Select
+              id="category"
+              onChange={changeCategory}
+              value={
+                paper.category !== undefined && paper.category !== null
+                  ? paper.category.id
+                  : ""
+              }
+            >
+              <option key={null} value={""}></option>
+              {categories.map((category) => {
+                return (
+                  <option key={category["@id"]} value={category.id}>
+                    {category.name}
+                  </option>
+                );
+              })}
+            </Form.Select>
+          </div>
         </div>
         <div className="mt-4">
           <Button type="submit">Envoyer</Button>

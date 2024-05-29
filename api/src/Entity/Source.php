@@ -6,7 +6,10 @@ use App\Repository\SourceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiResource()]
 #[ORM\Entity(repositoryClass: SourceRepository::class)]
 class Source
 {
@@ -21,6 +24,7 @@ class Source
     #[ORM\OneToMany(mappedBy: 'source', targetEntity: Picture::class)]
     private Collection $pictures;
 
+    #[Groups(['paper:read', 'paper:write'])]
     #[ORM\OneToMany(mappedBy: 'source', targetEntity: Link::class)]
     private Collection $links;
 

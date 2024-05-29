@@ -4,7 +4,10 @@ namespace App\Entity;
 
 use App\Repository\LinkRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiResource()]
 #[ORM\Entity(repositoryClass: LinkRepository::class)]
 class Link
 {
@@ -13,9 +16,11 @@ class Link
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['paper:read', 'paper:write'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['paper:read', 'paper:write'])]
     #[ORM\Column(length: 255)]
     private ?string $url = null;
 

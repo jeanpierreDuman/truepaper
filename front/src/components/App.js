@@ -19,7 +19,9 @@ export default function App() {
             <Col md={3}>
               <div className="menus">
                 <div className="text-center">
-                  <img src={"logo.png"} alt="Truepaper logo" />
+                  <Link to="/">
+                    <img src={"logo.png"} alt="Truepaper logo" />
+                  </Link>
                 </div>
                 <Link to="/">Papiers</Link>
                 <Link to="/categories">Categories</Link>

@@ -48,6 +48,7 @@ class Paper
     #[Groups(['paper:read', 'paper:write'])]
     private ?Category $category = null;
 
+    #[Groups(['paper:read', 'paper:write'])]
     #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Source::class)]
     private Collection $sources;
 
