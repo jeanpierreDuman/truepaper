@@ -1,6 +1,6 @@
 ## Truepaper application
 
-#### API
+### API
 
 Api for Truepaper app
 
@@ -10,7 +10,7 @@ Api for Truepaper app
   - Doctrine
 ```
 
-#### FRONT
+### FRONT
 
 Front of app & Consume API create bellow
 
@@ -19,10 +19,10 @@ Front of app & Consume API create bellow
   - Using fetch to get resource
 ```
 
-#### UML
+### UML
 
 ![alt text](https://github.com/jeanpierreDuman/truepaper/blob/main/uml.png)
 
-#### APP
+### APP
 
 ![alt text](https://github.com/jeanpierreDuman/truepaper/blob/main/app.png)
