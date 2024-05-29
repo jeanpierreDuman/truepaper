@@ -234,6 +234,12 @@ export default function PaperForm({ type = "add" }) {
             );
           })}
         </div>
+        <div className="div-form mt-2">
+          <h5>Images</h5>
+          <div className="text-center">
+            <Button onClick={() => addLink()}>Ajouter une image</Button>
+          </div>
+        </div>
         <div className="mt-4">
           <Button type="submit">Envoyer</Button>
         </div>

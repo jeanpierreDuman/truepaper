@@ -54,6 +54,10 @@ export default function Papers() {
     navigate("/paper/" + id + "/edit");
   };
 
+  const moveToPaperShowPage = (id) => {
+    navigate("/paper/" + id + "/show");
+  };
+
   const loadNextPapers = () => {
     if (pagination["hydra:next"] !== undefined) {
       fetchPapers(pagination["hydra:next"], filters).then((currentPapers) => {
@@ -123,7 +127,9 @@ export default function Papers() {
             return (
               <Card key={index} className="custom-card">
                 <Card.Body>
-                  <Card.Title>{paper.title}</Card.Title>
+                  <Card.Title onClick={() => moveToPaperShowPage(paper.id)}>
+                    {paper.title}
+                  </Card.Title>
                   <Card.Text
                     dangerouslySetInnerHTML={{ __html: paper.content }}
                   />

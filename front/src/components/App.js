@@ -9,6 +9,7 @@ import CategoryList from "./categories/CategoryList";
 import CategoryAdd from "./categories/CategoryAdd";
 import CategoryEdit from "./categories/CategoryEdit";
 import Col from "react-bootstrap/esm/Col";
+import PaperShow from "./papers/PaperShow";
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<PaperList />} />
                 <Route path="/paper/add" element={<PaperAdd />} />
+                <Route path="/paper/:id/show" element={<PaperShow />} />
                 <Route path="/paper/:id/edit" element={<PaperEdit />} />
                 <Route path="/categories" element={<CategoryList />} />
                 <Route path="/category/add" element={<CategoryAdd />} />

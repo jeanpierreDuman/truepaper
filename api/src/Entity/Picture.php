@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PictureRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
 class Picture
@@ -13,9 +14,11 @@ class Picture
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['paper:read', 'paper:write'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['paper:read', 'paper:write'])]
     #[ORM\Column(length: 255)]
     private ?string $url = null;
 

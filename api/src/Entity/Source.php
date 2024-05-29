@@ -18,6 +18,7 @@ class Source
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['paper:read', 'paper:write'])]
     #[ORM\OneToMany(mappedBy: 'source', targetEntity: Picture::class)]
     private Collection $pictures;
 
