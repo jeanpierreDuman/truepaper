@@ -52,17 +52,14 @@ async function addPaper(paper) {
 }
 
 async function updatePaper(paper) {
-  const response = await fetch(
-    "http://localhost:8000/api/papers/" + paper.id + "/update",
-    {
-      method: "PUT",
-      body: JSON.stringify(paper),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await fetch("http://localhost:8000/api/papers/" + paper.id, {
+    method: "PUT",
+    body: JSON.stringify(paper),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
 
   return response;
 }
