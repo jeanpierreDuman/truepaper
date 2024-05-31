@@ -19,7 +19,7 @@ class Source
     private ?int $id = null;
 
     #[Groups(['paper:read', 'paper:write'])]
-    #[ORM\OneToMany(mappedBy: 'source', targetEntity: Picture::class)]
+    #[ORM\OneToMany(mappedBy: 'source', targetEntity: Picture::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $pictures;
 
     #[Groups(['paper:read', 'paper:write'])]

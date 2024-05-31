@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import LinkForm from "../links/LinkForm";
 
 export default function PaperForm({ type = "add" }) {
   const [paper, setPaper] = useState({
@@ -15,6 +16,7 @@ export default function PaperForm({ type = "add" }) {
     category: null,
     source: {
       links: [],
+      pictures: [],
     },
   });
 
@@ -197,39 +199,12 @@ export default function PaperForm({ type = "add" }) {
           {paper.source.links.map((link, index) => {
             return (
               <div key={index}>
-                <div className="form-link">
-                  <p>
-                    Nom :{" "}
-                    <input
-                      type="text"
-                      value={link.name}
-                      className="form-control"
-                      name="name"
-                      onChange={(e) => {
-                        setOnChangeLink(e, index);
-                      }}
-                    />
-                    Url :
-                    <input
-                      type="text"
-                      value={link.url}
-                      className="form-control"
-                      name="url"
-                      onChange={(e) => {
-                        setOnChangeLink(e, index);
-                      }}
-                    />
-                  </p>
-                  <div className="action">
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => deleteLink(index)}
-                    >
-                      Supprimer le lien
-                    </Button>
-                  </div>
-                </div>
+                <LinkForm
+                  link={link}
+                  index={index}
+                  setOnChangeLink={setOnChangeLink}
+                  deleteLink={deleteLink}
+                />
               </div>
             );
           })}
