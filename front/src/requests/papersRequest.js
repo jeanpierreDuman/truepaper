@@ -39,7 +39,8 @@ async function getPaper(id) {
 }
 
 async function addPaper(paper) {
-  const response = await fetch("http://localhost:8000/api/papers", {
+  console.log(paper);
+  const response = fetch("http://localhost:8000/api/papers", {
     method: "POST",
     body: JSON.stringify(paper),
     headers: {

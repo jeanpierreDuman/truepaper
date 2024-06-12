@@ -7,6 +7,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PaperRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -16,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     paginationItemsPerPage: 10,
     normalizationContext: ['groups' => 'paper:read'],
-    denormalizationContext:['groups' => 'paper:write']
+    denormalizationContext:['groups' => 'paper:write'],
 )]
 #[ApiFilter(OrderFilter::class, properties: ['id'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(SearchFilter::class, properties: [
@@ -46,9 +48,22 @@ class Paper
     #[Groups(['paper:read', 'paper:write'])]
     private ?Category $category = null;
 
+    #[ORM\ManyToOne(inversedBy: 'papers')]
+    private ?Link $link = null;
+
     #[Groups(['paper:read', 'paper:write'])]
-    #[ORM\ManyToOne(inversedBy: 'papers', cascade: ['persist', 'remove'])]
-    private ?Source $source = null;
+    #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Link::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $links;
+
+    #[Groups(['paper:read', 'paper:write'])]
+    #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Picture::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $pictures;
+
+    public function __construct()
+    {
+        $this->links = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -91,14 +106,74 @@ class Paper
         return $this;
     }
 
-    public function getSource(): ?Source
+    public function getLink(): ?Link
     {
-        return $this->source;
+        return $this->link;
     }
 
-    public function setSource(?Source $source): static
+    public function setLink(?Link $link): static
     {
-        $this->source = $source;
+        $this->link = $link;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Link>
+     */
+    public function getLinks(): Collection
+    {
+        return $this->links;
+    }
+
+    public function addLink(Link $link): static
+    {
+        if (!$this->links->contains($link)) {
+            $this->links->add($link);
+            $link->setPaper($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLink(Link $link): static
+    {
+        if ($this->links->removeElement($link)) {
+            // set the owning side to null (unless already changed)
+            if ($link->getPaper() === $this) {
+                $link->setPaper(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Picture $picture): static
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures->add($picture);
+            $picture->setPaper($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): static
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getPaper() === $this) {
+                $picture->setPaper(null);
+            }
+        }
 
         return $this;
     }

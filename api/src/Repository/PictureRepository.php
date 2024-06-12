@@ -21,6 +21,19 @@ class PictureRepository extends ServiceEntityRepository
         parent::__construct($registry, Picture::class);
     }
 
+    public function getPreviousPicture($id) {
+        return $this->createQueryBuilder('p')
+            ->select('p.file')
+            ->leftJoin('p.paper', 'paper')
+            ->andWhere('paper.id = :id')
+            ->andWhere('p.dateUpdate < :date')
+            ->setParameter('id', $id)
+            ->setParameter('date', new \DateTime("now"))
+            ->getQuery()
+            ->getSingleColumnResult()
+        ;
+    }
+
 //    /**
 //     * @return Picture[] Returns an array of Picture objects
 //     */

@@ -8,16 +8,15 @@ import Button from "react-bootstrap/Button";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import LinkForm from "../links/LinkForm";
+import PictureForm from "../pictures/PictureForm";
 
 export default function PaperForm({ type = "add" }) {
   const [paper, setPaper] = useState({
     title: "",
     content: "",
     category: null,
-    source: {
-      links: [],
-      pictures: [],
-    },
+    links: [],
+    pictures: [],
   });
 
   const initialErrorPaperForm = {
@@ -39,11 +38,6 @@ export default function PaperForm({ type = "add" }) {
 
     if (type === "edit") {
       getPaper(id).then((data) => {
-        if (data.source === null) {
-          data.source = {
-            links: [],
-          };
-        }
         setPaper(data);
       });
     }
@@ -106,19 +100,20 @@ export default function PaperForm({ type = "add" }) {
   };
 
   const addLink = () => {
+    setPaper({ ...paper, links: [...paper.links, { name: "", url: "" }] });
+  };
+
+  const addPicture = () => {
     setPaper((prevPaper) => {
       return {
         ...prevPaper,
-        source: {
-          ...prevPaper.source,
-          links: [...paper.source.links, { name: "", url: "" }],
-        },
+        pictures: [...paper.pictures, { name: "", file: "" }],
       };
     });
   };
 
   const setOnChangeLink = (e, index) => {
-    let links = paper.source.links.map((link, indexLoop) => {
+    let links = paper.links.map((link, indexLoop) => {
       if (index === indexLoop) {
         link[e.target.name] = e.target.value;
       }
@@ -128,19 +123,60 @@ export default function PaperForm({ type = "add" }) {
     setPaper((prevPaper) => {
       return {
         ...prevPaper,
-        source: { ...prevPaper.source, links: links },
+        links: links,
+      };
+    });
+  };
+
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
+  const setOnChangePicture = (e, index) => {
+    let pictures = paper.pictures.map((picture, indexLoop) => {
+      if (index === indexLoop) {
+        if (e.target.name === "file") {
+          let fileBase64 = toBase64(e.target.files[0]);
+          fileBase64.then((data) => {
+            picture[e.target.name] = data.toString();
+          });
+        } else {
+          picture[e.target.name] = e.target.value;
+        }
+      }
+      return picture;
+    });
+
+    setPaper((prevPaper) => {
+      return {
+        ...prevPaper,
+        pictures: pictures,
+      };
+    });
+  };
+
+  const deletePicture = (index) => {
+    let pictures = paper.pictures.filter(
+      (picture, indexLoop) => indexLoop !== index
+    );
+    setPaper((prevPaper) => {
+      return {
+        ...prevPaper,
+        pictures: pictures,
       };
     });
   };
 
   const deleteLink = (index) => {
-    let links = paper.source.links.filter(
-      (link, indexLoop) => indexLoop !== index
-    );
+    let links = paper.links.filter((link, indexLoop) => indexLoop !== index);
     setPaper((prevPaper) => {
       return {
         ...prevPaper,
-        source: { ...prevPaper.source, links: links },
+        links: links,
       };
     });
   };
@@ -196,7 +232,7 @@ export default function PaperForm({ type = "add" }) {
           <div className="text-center">
             <Button onClick={() => addLink()}>Ajouter un lien</Button>
           </div>
-          {paper.source.links.map((link, index) => {
+          {paper.links.map((link, index) => {
             return (
               <div key={index}>
                 <LinkForm
@@ -212,8 +248,21 @@ export default function PaperForm({ type = "add" }) {
         <div className="div-form mt-2">
           <h5>Images</h5>
           <div className="text-center">
-            <Button onClick={() => addLink()}>Ajouter une image</Button>
+            <Button onClick={() => addPicture()}>Ajouter une image</Button>
           </div>
+
+          {paper.pictures.map((picture, index) => {
+            return (
+              <div key={index}>
+                <PictureForm
+                  picture={picture}
+                  index={index}
+                  setOnChangePicture={setOnChangePicture}
+                  deletePicture={deletePicture}
+                />
+              </div>
+            );
+          })}
         </div>
         <div className="mt-4">
           <Button type="submit">Envoyer</Button>

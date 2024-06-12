@@ -24,8 +24,8 @@ class Link
     #[ORM\Column(length: 255)]
     private ?string $url = null;
 
-    #[ORM\ManyToOne(inversedBy: 'links')]
-    private ?Source $source = null;
+    #[ORM\ManyToOne(inversedBy: 'links', cascade: ['persist'])]
+    private ?Paper $paper = null;
 
     public function getId(): ?int
     {
@@ -56,14 +56,14 @@ class Link
         return $this;
     }
 
-    public function getSource(): ?Source
+    public function getPaper(): ?Paper
     {
-        return $this->source;
+        return $this->paper;
     }
 
-    public function setSource(?Source $source): static
+    public function setPaper(?Paper $paper): static
     {
-        $this->source = $source;
+        $this->paper = $paper;
 
         return $this;
     }
