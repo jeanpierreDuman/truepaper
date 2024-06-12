@@ -48,9 +48,6 @@ class Paper
     #[Groups(['paper:read', 'paper:write'])]
     private ?Category $category = null;
 
-    #[ORM\ManyToOne(inversedBy: 'papers')]
-    private ?Link $link = null;
-
     #[Groups(['paper:read', 'paper:write'])]
     #[ORM\OneToMany(mappedBy: 'paper', targetEntity: Link::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $links;
