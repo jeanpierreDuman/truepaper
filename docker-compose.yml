@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: true-paper-app
+    image: true-paper-app
+    build:
+      context: ./front
+    volumes:
+      - ./front:/app
+    ports:
+      - 3000:3000
+
+  api:
+    container_name: true-paper-api
+    image: true-paper-api
+    build:
+      context: ./api
+    volumes:
+      - ./api:/api
+    ports:
+      - 8000:8000
