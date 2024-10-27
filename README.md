@@ -1,28 +1,17 @@
-## Truepaper application
+## Goals
 
-### API
+- Create crud with reactJS & ApiPlatform
 
-Api for Truepaper app
+## Framewwork or language
 
-```
-  - Symfony 6
-  - Api Platform
-  - Doctrine
-```
+- Symfony 6
+- Api platform
+- ReactJS
 
-### FRONT
+## Feature
 
-Front of app & Consume API create bellow
-
-```
-  - ReactJS
-  - Using fetch to get resource
-```
-
-### UML
-
-![alt text](https://github.com/jeanpierreDuman/truepaper/blob/main/uml.png)
-
-### APP
+- Create papers linked by category / pictures
+- Create category
+- Find papers by category
 
 ![alt text](https://github.com/jeanpierreDuman/truepaper/blob/main/app.png)
